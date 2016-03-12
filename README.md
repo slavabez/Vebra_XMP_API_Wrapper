@@ -36,9 +36,7 @@ Use the sendFullRequest method to get data. The method takes URLs as the paramet
 Example call that creates a URL to request for all properties and calls it:
 
 ```php
-
     $allProperties = $api->sendFullRequest($api->getRequestForPropertiesChangedSince(0));
-
 ```
 
 The getRequestForPropertiesChangedSince method uses a UNIX timestamp as the parameter and returns all properties that have been flagged as modified since that timestamp. Passing 0 to it will trigger it to send all properties
