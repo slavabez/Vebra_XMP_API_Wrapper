@@ -118,16 +118,12 @@ class VebraApi
 
     private function getLatestTokenExpiryTime()
     {
-        $db = Database::connection();
-        $data = $db->fetchColumn('SELECT expiresOn FROM eaVebraTokens ORDER BY ID DESC LIMIT 1;');
-        return $data;
+        // TODO: Implement your own method here that grabs the timestamp of the last toke expiry time
     }
 
     private function getLatestToken()
     {
-        $db = Database::connection();
-        $data = $db->fetchColumn('SELECT tokenValue FROM eaVebraTokens ORDER BY ID DESC LIMIT 1;');
-        return $data;
+        // TODO: Implement your own method here that grabs the latest token value
     }
 
     /**
@@ -171,14 +167,14 @@ class VebraApi
         }
         curl_close($curl);
 
-        return $this->xmlStringToArray($result);
+        return $this->xmlStringToJson($result);
     }
 
     /** Returns a PHP array from an XML string
      * @param $xmlString
      * @return mixed
      */
-    public static function xmlStringToArray($xmlString)
+    public static function xmlStringToJson($xmlString)
     {
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($xmlString);
@@ -226,7 +222,6 @@ class VebraApi
 
         // Open file helpers
         $fh = fopen($responseFilename, "w");
-
 
         $curlRequest = curl_init($sampleUrl);
         curl_setopt($curlRequest, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -286,39 +281,17 @@ class VebraApi
         return "http://webservices.vebra.com/export/{$this->_dataFeedId}/{$this->_version}/branch";
     }
 
+    /**
+     * @param $token
+     * @return bool
+     */
     private function saveTokenToDb($token)
     {
-        $db = Database::connection();
-
         // Create timestamp now, timestamp now + 60 minutes
         $createdTime = date('Y-m-d H:i:s', time());
         $expiryTime = date('Y-m-d H:i:s', time() + 60 * 60);
 
-        //Prepare data for insert
-        $data = [
-            "tokenValue" => $token,
-            "createdOn" => $createdTime,
-            "expiresOn" => $expiryTime
-        ];
-
-        if ($db->insert('eaVebraTokens', $data)) {
-            // Success
-            if ($this->_debug) {
-                print "<br /> Token inserted into the database successfully...<br />";
-            }
-            return $db->lastInsertId();
-        } else {
-            if ($this->_debug) {
-                print "<pre>";
-                print "The \$db object: <br />";
-                print_r($db);
-                print "</pre>";
-            }
-            if ($this->_debug) {
-                print("Error inserting the token value into the database...");
-            }
-            return false;
-        }
+        //TODO: Implement your own method that saves token value + expiry timestamp
     }
 
     /**
